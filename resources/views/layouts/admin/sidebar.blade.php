@@ -65,6 +65,11 @@
                 @endcan
                 
             </ul>
+            <script type="application/javascript">
+            window.park_number="{{Auth::user()->park_number}}";
+            window.user_type="{{Auth::user()->type}}";
+
+            </script>
         </nav>
         <!-- /.sidebar-menu -->
 

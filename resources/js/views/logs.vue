@@ -23,8 +23,8 @@
         <div class="content">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Historico de entradas</h3>
-
+                    <h3 class="card-title">Historico de entradas</h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href="" class="fas fa-file-export" v-on:click.prevent="generatePdf()"> Exportar em .pdf</a>
                     <div class="card-tools">
                         <div class="input-group input-group-sm" style="width: 150px;">
                             <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
@@ -51,7 +51,7 @@
                             <td>{{log.matricula}}</td>
                             <td>{{log.park_number}}</td>
                             <td>{{log.datetime}}</td>
-                            <td>{{user.id}}</td>
+                            <td>{{log.way}}</td>
                         </tr>
                         </tbody>
                     </table>
@@ -65,6 +65,7 @@
 </template>
 
 <script>
+import jsPDF from 'jsPDF'
 
     export default {
 
@@ -76,18 +77,47 @@
                     'matricula': '',
                     'park_number': '',
                 }),
-                user: '',
+                //user: '',
             }
 
         },
 
 
         created() {
-            axios.get('/api/logs')
+            //console.log(window.park_number);
+            axios.get('/api/logs/'+window.park_number)
                 .then(({data}) => this.logs = data);    
         },
 
         methods: {
+            generatePdf() {
+                const today = new Date();
+                    const date = today.getFullYear()+'_'+(today.getMonth()+1)+'_'+today.getDate();
+                    const time = today.getHours() + "_" + today.getMinutes() + "_" + today.getSeconds();
+                    const dateTime = "_"+ date +'-'+ time;
+                console.log(dateTime)
+
+                let dataPDF = this.logs;
+                let header = ["id","matricula","park_number","datetime","way"];
+                let headerConfig = header.map(key=>({ 
+                'name': key,
+                'prompt': key,
+                'width':50,
+                'align':'center',
+                'padding':0}));
+                const pdf = new jsPDF();
+                pdf.setFont("calibri");
+                pdf.setFontSize(14);
+                pdf.text(`  HISTORICO DE ENTRADAS/SAIDAS`, 65, 15);
+                pdf.table(10, 20, dataPDF, headerConfig);
+                try {
+                    pdf.save(`logs_parque`+window.park_number+dateTime+`.pdf`);
+                } catch (error) {
+                    console.log(error);
+                }
+                axios.get('/api/logs/'+window.park_number)
+                .then(({data}) => this.logs = data);
+            },
         }
     }
 
@@ -95,6 +125,8 @@
 <style>
 
 * { padding: 0; margin: 0; }
+
+a { color: inherit; } 
 
 html, body {
   height: 99%;

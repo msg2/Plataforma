@@ -50,7 +50,7 @@
                                         <th>Park Number (ID)</th>
                                         <th>Free Spots</th>
                                         <th>Total Spots</th>
-
+                                        <th>Opções</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -59,6 +59,7 @@
                                         <td>{{cliente.park_number}}</td>
                                         <td>{{cliente.lugares_livres}}</td>
                                         <td>{{cliente.lugares_max}}</td>
+                                        <td><a class="btn btn-sm btn-danger" v-on:click.prevent="deleteCliente(cliente.id)"> Delete</a></td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -123,35 +124,44 @@
 </template>
 
 <script>
-
     export default {
-
         data() {
-
             return {
                 clients: [],
                 form: new Form({
                     'name': '',
                     'park_number': '',
                     'lugares_max': '',
-                })
+                }),
+                int:null,
             }
-
         },
-
-
         created() {
             axios.get('/api/cliente')
-                .then(({data}) => this.clients = data);
+                    .then(({data}) => this.clients = data);
+            this.startInterval();
+            
         },
-
+        beforeDestroy () {
+            clearInterval(this.int);
+        },
         methods: {
             onSubmit(){
                 this.form
                     .post('/api/cliente/add')
                     .then(client => this.clients.push(client));
+            },
+            startInterval(){
+                this.int = setInterval(() => {
+                    axios.get('/api/cliente')
+                    .then(({data}) => this.clients = data);
+                }, 5000)
+            },
+            deleteCliente(id){
+                axios.delete('/api/cliente/'+id)
+                axios.get('/api/cliente')
+                    .then(({data}) => this.clients = data);
             }
         }
     }
-
 </script>

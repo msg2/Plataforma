@@ -30,7 +30,7 @@
                         <div class="card">
                             <div class="card-header">
                                 <h3 class="card-title">Matriculas Autorizadas</h3>
-
+                                
                                 <div class="card-tools">
                                     <div class="input-group input-group-sm" style="width: 150px;">
                                         <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
@@ -48,12 +48,14 @@
                                     <tr>
                                         <th>Matricula</th>
                                         <th>Park Number (ID)</th>
+                                        <th>Opções</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <tr v-for="matricula in matriculas" v-bind:key="matricula.id">
                                         <td>{{matricula.matricula}}</td>
                                         <td>{{matricula.park_number}}</td>
+                                        <td><a class="btn btn-sm btn-danger" v-on:click.prevent="deleteMatricula(matricula.id)"> Delete</a></td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -71,29 +73,36 @@
                             </div>
                             <!-- /.card-header -->
                             <!-- form start -->
-                            <form class="form-horizontal" @submit.prevent="onSubmit" @keydown="form.errors.clear()">
+                            <form class="form-horizontal" @submit.prevent="onSubmit">
                                 <div class="card-body" style="height: 159px;">
                                     <div class="form-group row">
                                         <label for="matricula" class="col-sm-2 col-form-label">Matricula</label>
                                         <div class="col-sm-10">
-                                            <input type="text" class="form-control" id="matricula" name="matricula" required autocomplete="matricula" autofocus placeholder="Matricula" v-model="form.matricula">
-                                            <span class="invalid-feedback d-block" role="alert" v-if="form.errors.has('matricula')" v-text="form.errors.get('matricula')"></span>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label for="number" class="col-sm-2 col-form-label">Park Number</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" class="form-control" id="number" name="number" required autocomplete="number" autofocus placeholder="Park Number" v-model="form.park_number">
-                                            <span class="invalid-feedback d-block" role="alert" v-if="form.errors.has('number')" v-text="form.errors.get('number')"></span>
+                                            <input type="text" class="form-control" id="matricula" name="matricula" required autocomplete="matricula" autofocus placeholder="Matricula" v-model="body.matricula">
                                         </div>
                                     </div>
                                 </div>
                                 <!-- /.card-body -->
                                 <div class="card-footer">
-                                    <button type="submit" class="btn btn-info" :disabled="form.errors.any()">Add Client</button>
+                                    <button type="submit" class="btn btn-info" >Add Client</button>
                                 </div>
                                 <!-- /.card-footer -->
                             </form>
+                        </div>
+
+                        <div class="card card-info">
+                            <div class="card-header">
+                                <h3 class="card-title">Carregar .csv</h3>
+                            </div>
+                            <div class="card-body">
+                                <label for="exampleInputFile"> File .csv </label><br>
+                                <input type="file" id="file" ref="file" v-on:change="handleFileUpload()"/>
+                            </div>
+                            <div class="card-footer">
+                                <button class="btn btn-info" v-on:click="submitFile()">Submit</button>
+                            </div>
+                            <!-- /.card-header -->
+                            <!-- form start -->
                         </div>
 
                     </div>
@@ -118,25 +127,53 @@
 
             return {
                 matriculas: [],
-                form: new Form({
-                    'matricula': '',
-                    'park_number': '',
-                })
+                body:{
+                    matricula: "",
+                    park_number: window.park_number,
+                },
+                form: new Form({}),
+                file:''
             }
 
         },
 
 
         created() {
-            axios.get('/api/matricula')
+            //console.log(window.park_number);
+            axios.get('/api/matricula/'+window.park_number)
                 .then(({data}) => this.matriculas = data);
         },
 
         methods: {
             onSubmit(){
-                this.form
-                    .post('/api/matricula/add')
-                    .then(matricula => this.matriculas.push(matricula));
+                //console.log(this.body)
+                axios.post('/api/matricula/add',this.body)
+                    .then(body => this.matriculas.push(this.body));
+            },
+            deleteMatricula(matricula){
+                //console.log(matricula);
+                axios.delete('/api/matricula/'+matricula);
+                axios.get('/api/matricula/'+window.park_number)
+                .then(({data}) => this.matriculas = data);
+            },
+            submitFile(){
+                
+                const data = new FormData();
+                data.append('file', this.file);
+                data.append('park_number', window.park_number);
+               
+                axios.post('/api/file/upload',data);
+                this.fetchData();
+
+            },
+            
+            handleFileUpload(){
+                this.file = this.$refs.file.files[0];
+            },
+
+            fetchData(){
+                axios.get('/api/matricula/'+window.park_number)
+                .then(({data}) => this.matriculas = data);
             }
         }
     }

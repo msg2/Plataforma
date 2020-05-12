@@ -51,7 +51,7 @@
                                         <th>Email</th>
                                         <th>Type</th>
                                         <th>Park Number</th>
-
+                                        <th>Opções</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -61,7 +61,7 @@
                                         <td>{{user.email}}</td>
                                         <td>{{user.type}}</td>
                                         <td>{{user.park_number}}</td>
-
+                                        <td><a class="btn btn-sm btn-danger" v-if="user.type =='user'" v-on:click.prevent="deleteUser(user.id)"> Delete</a></td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -182,6 +182,11 @@
                 this.form
                     .post('/users')
                     .then(user => this.users.push(user));
+            },
+            deleteUser(id){
+                axios.delete('/api/users/'+id)
+                axios.get('/api/users')
+                    .then(({data}) => this.users = data);
             }
         },
 

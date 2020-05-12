@@ -14,6 +14,10 @@ use App\Cliente;
 use App\Matricula;
 use App\User;
 use App\LogMatricula;
+use App\MatriculaImport;
+
+
+use Excel;
 
 
 class SingleControllerAPI extends Controller
@@ -88,9 +92,10 @@ class SingleControllerAPI extends Controller
 
     public function updatelivres(Request $request)
     {
+        //return "ola";
         $validator = Validator::make($request->all(),[
             'park_number'    => 'required|exists:clientes,park_number',
-            'lugares_livres'    => 'required|numeric|min:1',
+            'lugares_livres'    => 'required|numeric|min:0',
         ]);
 
         if ($validator->fails()) {
@@ -128,12 +133,39 @@ class SingleControllerAPI extends Controller
         return Cliente::all();
     }
 
+    public function getNumClients() {
+        return Cliente::all()->count();
+    }
+
+    public function getNumUsers() {
+        return User::all()->count();
+    }
+
+    public function getClientByParkNum(int $pn) {
+        return Cliente::where('park_number', $pn)->get();
+    }
+
     public function getMatriculas() {
         return Matricula::all();
     }
 
+    public function getMatriculasPark(int $park) {
+        return DB::table('matriculas')
+        ->where('park_number', $park)->get();
+    }
+
+    public function getNMatrPark(int $park) {
+        return DB::table('matriculas')
+        ->where('park_number', $park)->count();
+    }
+
     public function getLogs() {
         return LogMatricula::all();
+    }
+
+    public function getLogsPark(int $park) {
+        return DB::table('logsmatricula')
+        ->where('park_number', $park)->get();
     }
     
     public function profile()
@@ -141,4 +173,120 @@ class SingleControllerAPI extends Controller
         return auth('api')->user();
     }
 
+    public function deleteMatricula(int $id){
+        return Matricula::where('id', $id)->delete();
+    }
+
+    public function deleteCliente(int $id){
+        return Cliente::where('id', $id)->delete();
+    }
+
+    public function deleteUser(int $id){
+        return User::where('id', $id)->delete();
+    }
+
+    public function importMatricula(Request $request) 
+    {
+        $validator = Validator::make($request->all(),[
+            'file'    => 'required|mimes:csv,txt'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json("Dados invalidos!", 400);
+        }
+        $park_number=$request->park_number;
+        $file=fopen($request->file, 'r');
+        //$newPath = $request->photo
+        $header= fgetcsv($file);
+
+        $escapedHeader=[];
+        $lheader=strtolower($header[0]); //pode ser assim porque so ha 1 header, com +1 tinha de ser com foreach
+        $escapedItem=preg_replace('/[^a-z]/', '', $lheader);
+        array_push($escapedHeader, $escapedItem);
+
+        while($columns=fgetcsv($file))
+        {
+            if($columns[0]=="")
+            {
+                continue;
+            }
+            //trim data
+
+           $data= array_combine($escapedHeader, $columns);
+
+           $obj= Matricula::firstOrCreate(['matricula'=>$data['matriculas'],'park_number'=>$park_number]);
+        }
+        
+        return response()->json(['success' => 'success'], 200);
+    }
+
+    public function changeOccupied(Request $request) {
+        $validator = Validator::make($request->all(),[
+            'arduino'    => 'required|exists:arduinos,arduino',
+            'ocupados'    => 'required|numeric|min:0',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json("Dados invalidos!", 400);
+        }
+
+        DB::table('arduinos')
+        ->where('arduino', $request->arduino)->update(['ocupados' => $request->ocupados]); //atualizar os ocupados
+
+        $park = DB::table('arduinos')
+        ->where('arduino', $request->arduino)->get('park_number'); //saber o park_number
+        $park_number = $park[0]->park_number;
+        
+        $totalOccupied = DB::table('arduinos')
+        ->where('park_number', $park_number)->sum('ocupados'); //calcular o total dos ocupados desse parque
+
+        $park_max = Cliente::where('park_number', $park_number)->get('lugares_max'); //get do maximo desse parque
+
+        $free=$park_max[0]['lugares_max']-$totalOccupied; 
+        
+        Cliente::where('park_number', $park_number)->update(['lugares_livres' => $free]); //atualizar os livres na tabela clientes
+    
+        return response()->json(['success' => 'success'], 200);
+    }
+
+    public function freeSpotsPark(int $id){   
+        $free = Cliente::where('park_number', $id)->get('lugares_livres');
+        //return $free[0]['lugares_livres'];
+
+        return response()->json($free[0]['lugares_livres'], 203);
+
+    }
+
+    public function usoButoes(Request $request){
+        $validator = Validator::make($request->all(),[
+            'botao'    => 'required|exists:estados,name',
+            'estado'    => 'required|numeric|min:0', #0 ou 1, desligado ou ligado
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json("Dados invalidos!", 400);
+        }
+
+        //os botões vão funcionar ao pares, botão1 com botão2, botão3 com botão4, sempre assim para ser possivel automatizar 
+        //para alem disso o botão1 liga o micro1 e à coluna1, o botão 2 liga o micro2 e à coluna2
+        //o botão1 está ao pé do micro1, mas a coluna1 está longe (quero transmitir o som para outro lado do paque)
+        //o botão2 está ao pé do micro2, mas a coluna2 está longe
+        //o objetivo é clicar no botão, isso ativa o meu micro, e o som sai no outro extremo((no segurança, caso eu ative o botão da entrada || ou na entrada, caso eu seja o segurança e ative o botao do segurança)
+        
+        $nrBotao= substr($request->botao, -1);  //apanhar o ultimo digito do nome do botão, ou seja o nr 
+
+        DB::table('estados')->where('name','botao'.$nrBotao )->update(['estado' => $request->estado]);
+        DB::table('estados')->where('name','micro'.$nrBotao )->update(['estado' => $request->estado]);
+        DB::table('estados')->where('name','coluna'.$nrBotao )->update(['estado' => $request->estado]);
+        
+        
+        return response()->json(['success' => 'success'], 200);
+
+    }
+
+    public function getColunaState(int $id) {
+        $estado= DB::table('estados')->where('name','coluna'.$id)->get('estado');
+        //return $estado[0]->'estado';
+        return $estado[0]->estado;
+    }
 }
