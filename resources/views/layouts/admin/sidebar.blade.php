@@ -1,6 +1,6 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="/" class="brand-link">
+    <a href="/dashboard" class="brand-link">
         <img src="/images/u72gvw.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
              style="opacity: .8">
         <span class="brand-text font-weight-light">Mega Project</span>
@@ -19,7 +19,7 @@
                 @endcan
             </div>
             <div class="info">
-                <a class="d-block" href="#">{{ Auth::user()->name }}</a>
+                <a class="d-block" >{{ Auth::user()->name }}</a>
             </div>
         </div>
 

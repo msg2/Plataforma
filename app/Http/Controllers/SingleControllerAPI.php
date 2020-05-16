@@ -151,7 +151,7 @@ class SingleControllerAPI extends Controller
 
     public function getMatriculasPark(int $park) {
         return DB::table('matriculas')
-        ->where('park_number', $park)->get();
+        ->where('park_number', $park)->get('matricula');
     }
 
     public function getNMatrPark(int $park) {

@@ -2073,16 +2073,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2148,8 +2138,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-//
-//
 //
 //
 //
@@ -2325,15 +2313,6 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var jsPDF__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jsPDF */ "./node_modules/jsPDF/dist/jspdf.min.js");
 /* harmony import */ var jsPDF__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jsPDF__WEBPACK_IMPORTED_MODULE_0__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
 //
 //
 //
@@ -2572,18 +2551,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2609,7 +2576,9 @@ __webpack_require__.r(__webpack_exports__);
     onSubmit: function onSubmit() {
       var _this2 = this;
 
-      //console.log(this.body)
+      this.body.matricula = this.body.matricula.trim();
+      this.body.matricula = this.body.matricula.toUpperCase(); //console.log(this.body)
+
       axios.post('/api/matricula/add', this.body).then(function (body) {
         return _this2.matriculas.push(_this2.body);
       });
@@ -2682,16 +2651,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 //
 //
 //
@@ -39803,7 +39762,7 @@ var render = function() {
                           disabled: _vm.form.errors.any()
                         }
                       },
-                      [_vm._v("Add Client")]
+                      [_vm._v("Add Park")]
                     )
                   ])
                 ]
@@ -39849,35 +39808,7 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "card-header" }, [
-      _c("h3", { staticClass: "card-title" }, [_vm._v("Lista de Parques")]),
-      _vm._v(" "),
-      _c("div", { staticClass: "card-tools" }, [
-        _c(
-          "div",
-          {
-            staticClass: "input-group input-group-sm",
-            staticStyle: { width: "150px" }
-          },
-          [
-            _c("input", {
-              staticClass: "form-control float-right",
-              attrs: {
-                type: "text",
-                name: "table_search",
-                placeholder: "Search"
-              }
-            }),
-            _vm._v(" "),
-            _c("div", { staticClass: "input-group-append" }, [
-              _c(
-                "button",
-                { staticClass: "btn btn-default", attrs: { type: "submit" } },
-                [_c("i", { staticClass: "fas fa-search" })]
-              )
-            ])
-          ]
-        )
-      ])
+      _c("h3", { staticClass: "card-title" }, [_vm._v("Lista de Parques")])
     ])
   },
   function() {
@@ -39903,7 +39834,7 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "card-header" }, [
-      _c("h3", { staticClass: "card-title" }, [_vm._v("New Client Form")])
+      _c("h3", { staticClass: "card-title" }, [_vm._v("New Park Form")])
     ])
   }
 ]
@@ -39980,9 +39911,7 @@ var render = function() {
                 _c("p", [_vm._v("Parques Atualmente")])
               ]),
               _vm._v(" "),
-              _vm._m(3),
-              _vm._v(" "),
-              _vm._m(4)
+              _vm._m(3)
             ])
           ]),
           _vm._v(" "),
@@ -40000,9 +39929,7 @@ var render = function() {
                   _c("p", [_vm._v("Plataform Users")])
                 ]),
                 _vm._v(" "),
-                _vm._m(5),
-                _vm._v(" "),
-                _vm._m(6)
+                _vm._m(4)
               ]
             )
           ])
@@ -40073,26 +40000,8 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("a", { staticClass: "small-box-footer", attrs: { href: "#" } }, [
-      _vm._v(" More info "),
-      _c("i", { staticClass: "fa fa-arrow-circle-right" })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
     return _c("div", { staticClass: "icon" }, [
       _c("i", { staticClass: "fas fa-user-friends" })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("a", { staticClass: "small-box-footer", attrs: { href: "#" } }, [
-      _vm._v("More info "),
-      _c("i", { staticClass: "fa fa-arrow-circle-right" })
     ])
   }
 ]
@@ -40140,14 +40049,12 @@ var render = function() {
               }
             },
             [_vm._v(" Exportar em .pdf")]
-          ),
-          _vm._v(" "),
-          _vm._m(1)
+          )
         ]),
         _vm._v(" "),
         _c("div", { staticClass: "card-body table-responsive p-0" }, [
           _c("table", { staticClass: "table table-hover" }, [
-            _vm._m(2),
+            _vm._m(1),
             _vm._v(" "),
             _c(
               "tbody",
@@ -40195,34 +40102,6 @@ var staticRenderFns = [
           ])
         ])
       ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card-tools" }, [
-      _c(
-        "div",
-        {
-          staticClass: "input-group input-group-sm",
-          staticStyle: { width: "150px" }
-        },
-        [
-          _c("input", {
-            staticClass: "form-control float-right",
-            attrs: { type: "text", name: "table_search", placeholder: "Search" }
-          }),
-          _vm._v(" "),
-          _c("div", { staticClass: "input-group-append" }, [
-            _c(
-              "button",
-              { staticClass: "btn btn-default", attrs: { type: "submit" } },
-              [_c("i", { staticClass: "fas fa-search" })]
-            )
-          ])
-        ]
-      )
     ])
   },
   function() {
@@ -40288,8 +40167,6 @@ var render = function() {
                       _vm._l(_vm.matriculas, function(matricula) {
                         return _c("tr", { key: matricula.id }, [
                           _c("td", [_vm._v(_vm._s(matricula.matricula))]),
-                          _vm._v(" "),
-                          _c("td", [_vm._v(_vm._s(matricula.park_number))]),
                           _vm._v(" "),
                           _c("td", [
                             _c(
@@ -40470,34 +40347,6 @@ var staticRenderFns = [
     return _c("div", { staticClass: "card-header" }, [
       _c("h3", { staticClass: "card-title" }, [
         _vm._v("Matriculas Autorizadas")
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "card-tools" }, [
-        _c(
-          "div",
-          {
-            staticClass: "input-group input-group-sm",
-            staticStyle: { width: "150px" }
-          },
-          [
-            _c("input", {
-              staticClass: "form-control float-right",
-              attrs: {
-                type: "text",
-                name: "table_search",
-                placeholder: "Search"
-              }
-            }),
-            _vm._v(" "),
-            _c("div", { staticClass: "input-group-append" }, [
-              _c(
-                "button",
-                { staticClass: "btn btn-default", attrs: { type: "submit" } },
-                [_c("i", { staticClass: "fas fa-search" })]
-              )
-            ])
-          ]
-        )
       ])
     ])
   },
@@ -40508,8 +40357,6 @@ var staticRenderFns = [
     return _c("thead", [
       _c("tr", [
         _c("th", [_vm._v("Matricula")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Park Number (ID)")]),
         _vm._v(" "),
         _c("th", [_vm._v("Opções")])
       ])
@@ -40531,7 +40378,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "card-footer" }, [
       _c("button", { staticClass: "btn btn-info", attrs: { type: "submit" } }, [
-        _vm._v("Add Client")
+        _vm._v("Add Matricula")
       ])
     ])
   },
@@ -42758,34 +42605,6 @@ var staticRenderFns = [
     return _c("div", { staticClass: "card-header" }, [
       _c("h3", { staticClass: "card-title" }, [
         _vm._v("Utilizadores da Plataforma")
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "card-tools" }, [
-        _c(
-          "div",
-          {
-            staticClass: "input-group input-group-sm",
-            staticStyle: { width: "150px" }
-          },
-          [
-            _c("input", {
-              staticClass: "form-control float-right",
-              attrs: {
-                type: "text",
-                name: "table_search",
-                placeholder: "Search"
-              }
-            }),
-            _vm._v(" "),
-            _c("div", { staticClass: "input-group-append" }, [
-              _c(
-                "button",
-                { staticClass: "btn btn-default", attrs: { type: "submit" } },
-                [_c("i", { staticClass: "fas fa-search" })]
-              )
-            ])
-          ]
-        )
       ])
     ])
   },
@@ -57960,6 +57779,31 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('example-component', __webp
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+_routes__WEBPACK_IMPORTED_MODULE_3__["default"].beforeEach(function (to, from, next) {
+  if (to.meta.requiresAdmin) {
+    if (window.user_type == "admin") {
+      next();
+      return;
+    } else {
+      next('/notfound');
+      console.log("Needs to be an Admin");
+      return;
+    }
+  }
+
+  if (to.meta.requiresUser) {
+    if (window.user_type == "user") {
+      next();
+      return;
+    } else {
+      next('/notfound');
+      console.log("Just for users");
+      return;
+    }
+  }
+
+  next();
+});
 new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
   el: '#app',
   router: _routes__WEBPACK_IMPORTED_MODULE_3__["default"]
@@ -58106,16 +57950,31 @@ var routes = [{
   component: __webpack_require__(/*! ./views/dashboard */ "./resources/js/views/dashboard.vue")["default"]
 }, {
   path: '/users',
-  component: __webpack_require__(/*! ./views/users */ "./resources/js/views/users.vue")["default"]
+  component: __webpack_require__(/*! ./views/users */ "./resources/js/views/users.vue")["default"],
+  meta: {
+    requiresAdmin: true
+  }
 }, {
   path: '/clients',
-  component: __webpack_require__(/*! ./views/clients */ "./resources/js/views/clients.vue")["default"]
+  component: __webpack_require__(/*! ./views/clients */ "./resources/js/views/clients.vue")["default"],
+  meta: {
+    requiresAdmin: true
+  }
 }, {
   path: '/matriculas',
-  component: __webpack_require__(/*! ./views/matriculas */ "./resources/js/views/matriculas.vue")["default"]
+  component: __webpack_require__(/*! ./views/matriculas */ "./resources/js/views/matriculas.vue")["default"],
+  meta: {
+    requiresUser: true
+  }
 }, {
   path: '/logs',
-  component: __webpack_require__(/*! ./views/logs */ "./resources/js/views/logs.vue")["default"]
+  component: __webpack_require__(/*! ./views/logs */ "./resources/js/views/logs.vue")["default"],
+  meta: {
+    requiresUser: true
+  }
+}, {
+  path: '/home',
+  component: __webpack_require__(/*! ./views/dashboard */ "./resources/js/views/dashboard.vue")["default"]
 }, {
   path: '/',
   component: __webpack_require__(/*! ./views/dashboard */ "./resources/js/views/dashboard.vue")["default"]

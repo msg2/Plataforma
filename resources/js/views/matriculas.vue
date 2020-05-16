@@ -30,16 +30,6 @@
                         <div class="card">
                             <div class="card-header">
                                 <h3 class="card-title">Matriculas Autorizadas</h3>
-                                
-                                <div class="card-tools">
-                                    <div class="input-group input-group-sm" style="width: 150px;">
-                                        <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
-
-                                        <div class="input-group-append">
-                                            <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body table-responsive p-0" style="height: 400px;">
@@ -47,14 +37,12 @@
                                     <thead>
                                     <tr>
                                         <th>Matricula</th>
-                                        <th>Park Number (ID)</th>
                                         <th>Opções</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     <tr v-for="matricula in matriculas" v-bind:key="matricula.id">
                                         <td>{{matricula.matricula}}</td>
-                                        <td>{{matricula.park_number}}</td>
                                         <td><a class="btn btn-sm btn-danger" v-on:click.prevent="deleteMatricula(matricula.id)"> Delete</a></td>
                                     </tr>
                                     </tbody>
@@ -84,7 +72,7 @@
                                 </div>
                                 <!-- /.card-body -->
                                 <div class="card-footer">
-                                    <button type="submit" class="btn btn-info" >Add Client</button>
+                                    <button type="submit" class="btn btn-info" >Add Matricula</button>
                                 </div>
                                 <!-- /.card-footer -->
                             </form>
@@ -146,6 +134,9 @@
 
         methods: {
             onSubmit(){
+                this.body.matricula = this.body.matricula.trim();
+                this.body.matricula = this.body.matricula.toUpperCase();
+
                 //console.log(this.body)
                 axios.post('/api/matricula/add',this.body)
                     .then(body => this.matriculas.push(this.body));

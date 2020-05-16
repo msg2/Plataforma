@@ -30,16 +30,6 @@
                         <div class="card">
                             <div class="card-header">
                                 <h3 class="card-title">Lista de Parques</h3>
-
-                                <div class="card-tools">
-                                    <div class="input-group input-group-sm" style="width: 150px;">
-                                        <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
-
-                                        <div class="input-group-append">
-                                            <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body table-responsive p-0" style="height: 450px;">
@@ -73,7 +63,7 @@
 
                         <div class="card card-info">
                             <div class="card-header">
-                                <h3 class="card-title">New Client Form</h3>
+                                <h3 class="card-title">New Park Form</h3>
                             </div>
                             <!-- /.card-header -->
                             <!-- form start -->
@@ -103,7 +93,7 @@
                                 </div>
                                 <!-- /.card-body -->
                                 <div class="card-footer">
-                                    <button type="submit" class="btn btn-info" :disabled="form.errors.any()">Add Client</button>
+                                    <button type="submit" class="btn btn-info" :disabled="form.errors.any()">Add Park</button>
                                 </div>
                                 <!-- /.card-footer -->
                             </form>

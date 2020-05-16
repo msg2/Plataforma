@@ -8,19 +8,27 @@ let routes = [
     },
     {
         path: '/users',
-        component: require('./views/users').default
+        component: require('./views/users').default,
+        meta : {requiresAdmin : true}
     },
     {
         path: '/clients',
-        component: require('./views/clients').default
+        component: require('./views/clients').default,
+        meta : {requiresAdmin : true}
     },
     {
         path: '/matriculas',
-        component: require('./views/matriculas').default
+        component: require('./views/matriculas').default,
+        meta : {requiresUser : true}
     },
     {
         path: '/logs',
-        component: require('./views/logs').default
+        component: require('./views/logs').default,
+        meta : {requiresUser : true}
+    },
+    {
+        path: '/home',
+        component: require('./views/dashboard').default
     },
     {
         path: '/',

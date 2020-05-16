@@ -40,6 +40,34 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+router.beforeEach((to, from, next) => {
+    if(to.meta.requiresAdmin){
+
+        if (window.user_type=="admin"){
+            next() 
+            return;
+        }else{
+            next('/notfound')
+            console.log("Needs to be an Admin");
+            return;
+        }
+
+    }
+    if(to.meta.requiresUser){
+    
+        if (window.user_type=="user"){
+            next() 
+            return;
+        }else{
+            next('/notfound')
+            console.log("Just for users");
+            return;
+        }
+    }
+
+    next();      
+})
+
 new Vue({
     el: '#app',
     router,
