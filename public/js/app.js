@@ -40156,7 +40156,7 @@ var render = function() {
                 "div",
                 {
                   staticClass: "card-body table-responsive p-0",
-                  staticStyle: { height: "400px" }
+                  staticStyle: { height: "450px" }
                 },
                 [
                   _c("table", { staticClass: "table table-hover" }, [
@@ -40213,7 +40213,7 @@ var render = function() {
                     "div",
                     {
                       staticClass: "card-body",
-                      staticStyle: { height: "159px" }
+                      staticStyle: { height: "109px" }
                     },
                     [
                       _c("div", { staticClass: "form-group row" }, [
@@ -42192,7 +42192,9 @@ var render = function() {
                           _vm._v(" "),
                           _c("td", [_vm._v(_vm._s(user.type))]),
                           _vm._v(" "),
-                          _c("td", [_vm._v(_vm._s(user.park_number))]),
+                          user.type == "user"
+                            ? _c("td", [_vm._v(" " + _vm._s(user.park_number))])
+                            : _vm._e(),
                           _vm._v(" "),
                           _c("td", [
                             user.type == "user"

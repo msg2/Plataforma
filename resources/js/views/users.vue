@@ -50,7 +50,7 @@
                                         <td>{{user.name}}</td>
                                         <td>{{user.email}}</td>
                                         <td>{{user.type}}</td>
-                                        <td>{{user.park_number}}</td>
+                                        <td v-if="user.type =='user'"> {{user.park_number}}</td>
                                         <td><a class="btn btn-sm btn-danger" v-if="user.type =='user'" v-on:click.prevent="deleteUser(user.id)"> Delete</a></td>
                                     </tr>
                                     </tbody>

@@ -32,7 +32,7 @@
                                 <h3 class="card-title">Matriculas Autorizadas</h3>
                             </div>
                             <!-- /.card-header -->
-                            <div class="card-body table-responsive p-0" style="height: 400px;">
+                            <div class="card-body table-responsive p-0" style="height: 450px;">
                                 <table class="table table-hover">
                                     <thead>
                                     <tr>
@@ -62,7 +62,7 @@
                             <!-- /.card-header -->
                             <!-- form start -->
                             <form class="form-horizontal" @submit.prevent="onSubmit">
-                                <div class="card-body" style="height: 159px;">
+                                <div class="card-body" style="height: 109px;">
                                     <div class="form-group row">
                                         <label for="matricula" class="col-sm-2 col-form-label">Matricula</label>
                                         <div class="col-sm-10">

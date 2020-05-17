@@ -45,7 +45,7 @@
                 <li class="nav-item">
                     <router-link tag="a" to="/users" class="nav-link">
                         <i class="nav-icon fas fa-th"></i>
-                        <p>Users</p>
+                        <p>Utiliadores</p>
                     </router-link>
                 </li>
                 @endcan

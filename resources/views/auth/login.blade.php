@@ -75,7 +75,7 @@
                         </p>
                         @endif
                         <p class="mb-0">
-                            <a href="/register" class="text-center">Register a new membership</a>
+                            <!--<a href="/register" class="text-center">Register a new membership</a>-->
                         </p>
                     </div>
                 </div> 
