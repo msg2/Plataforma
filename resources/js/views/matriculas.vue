@@ -43,7 +43,7 @@
                                     <tbody>
                                     <tr v-for="matricula in matriculas" v-bind:key="matricula.id">
                                         <td>{{matricula.matricula}}</td>
-                                        <td><a class="btn btn-sm btn-danger" v-on:click.prevent="deleteMatricula(matricula.id)"> Delete</a></td>
+                                        <td><a class="btn btn-sm btn-danger" v-on:click.prevent="deleteMatricula(matricula.matricula)"> Delete</a></td>
                                     </tr>
                                     </tbody>
                                 </table>

@@ -43,7 +43,7 @@
                                     <tbody>
                                     <tr v-for="qrcode in qrcodes" v-bind:key="qrcode.id">
                                         <td>{{qrcode.value}}</td>
-                                        <td><a class="btn btn-sm btn-danger" v-on:click.prevent="deleteQR(qrcode.id)"> Delete</a></td>
+                                        <td><a class="btn btn-sm btn-danger" v-on:click.prevent="deleteQR(qrcode.value)"> Delete</a></td>
                                     </tr>
                                     </tbody>
                                 </table>

@@ -63,6 +63,7 @@ import jsPDF from 'jsPDF'
         data() {
 
             return {
+                int:null,
                 logs: [],
                 form: new Form({
                     'matricula': '',
@@ -76,8 +77,18 @@ import jsPDF from 'jsPDF'
 
         created() {
             //console.log(window.park_number);
-            axios.get('/api/logs/'+window.park_number)
-                .then(({data}) => this.logs = data);    
+            //axios.get('/api/logs/'+window.park_number)
+            //    .then(({data}) => this.logs = data);    
+        },
+
+        beforeDestroy () {
+            console.log('2')
+            clearInterval(this.int);
+
+        },
+        
+        mounted: function() {
+            this.fetchData();
         },
 
         methods: {
@@ -109,6 +120,14 @@ import jsPDF from 'jsPDF'
                 axios.get('/api/logs/'+window.park_number)
                 .then(({data}) => this.logs = data);
             },
+            fetchData(){
+                this.int= setInterval(() => {
+                     axios.get('/api/logs/'+window.park_number)
+                        .then(({data}) => this.logs = data);  
+                }, 2000)
+                
+            }
+
         }
     }
 

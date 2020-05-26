@@ -172,7 +172,7 @@ class SingleControllerAPI extends Controller
 
     public function getLogsPark(int $park) {
         return DB::table('logs')
-        ->where('park_number', $park)->get();
+        ->where('park_number', $park)->orderBy('id', 'desc')->get();
     }
     
     public function profile()
@@ -180,16 +180,16 @@ class SingleControllerAPI extends Controller
         return auth('api')->user();
     }
 
-    public function deleteMatricula(int $id){
-        return Matricula::where('id', $id)->delete();
+    public function deleteMatricula(string $id){
+        return Matricula::where('matricula', $id)->delete();
     }
 
     public function deleteCliente(int $id){
         return Cliente::where('id', $id)->delete();
     }
 
-    public function deleteQRcode(int $id){
-        return QRcode::where('id', $id)->delete();
+    public function deleteQRcode(string $id){
+        return QRcode::where('value', $id)->delete();
     }
 
     public function deleteUser(int $id){

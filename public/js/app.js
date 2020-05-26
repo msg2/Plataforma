@@ -2374,6 +2374,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      "int": null,
       logs: [],
       form: new Form({
         'matricula': '',
@@ -2382,18 +2383,20 @@ __webpack_require__.r(__webpack_exports__);
 
     };
   },
-  created: function created() {
-    var _this = this;
-
-    //console.log(window.park_number);
-    axios.get('/api/logs/' + window.park_number).then(function (_ref) {
-      var data = _ref.data;
-      return _this.logs = data;
-    });
+  created: function created() {//console.log(window.park_number);
+    //axios.get('/api/logs/'+window.park_number)
+    //    .then(({data}) => this.logs = data);    
+  },
+  beforeDestroy: function beforeDestroy() {
+    console.log('2');
+    clearInterval(this["int"]);
+  },
+  mounted: function mounted() {
+    this.fetchData();
   },
   methods: {
     generatePdf: function generatePdf() {
-      var _this2 = this;
+      var _this = this;
 
       var today = new Date();
       var date = today.getFullYear() + '_' + (today.getMonth() + 1) + '_' + today.getDate();
@@ -2423,10 +2426,20 @@ __webpack_require__.r(__webpack_exports__);
         console.log(error);
       }
 
-      axios.get('/api/logs/' + window.park_number).then(function (_ref2) {
-        var data = _ref2.data;
-        return _this2.logs = data;
+      axios.get('/api/logs/' + window.park_number).then(function (_ref) {
+        var data = _ref.data;
+        return _this.logs = data;
       });
+    },
+    fetchData: function fetchData() {
+      var _this2 = this;
+
+      this["int"] = setInterval(function () {
+        axios.get('/api/logs/' + window.park_number).then(function (_ref2) {
+          var data = _ref2.data;
+          return _this2.logs = data;
+        });
+      }, 2000);
     }
   }
 });
@@ -46110,7 +46123,9 @@ var render = function() {
                                 on: {
                                   click: function($event) {
                                     $event.preventDefault()
-                                    return _vm.deleteMatricula(matricula.id)
+                                    return _vm.deleteMatricula(
+                                      matricula.matricula
+                                    )
                                   }
                                 }
                               },
@@ -48128,7 +48143,7 @@ var render = function() {
                                 on: {
                                   click: function($event) {
                                     $event.preventDefault()
-                                    return _vm.deleteQR(qrcode.id)
+                                    return _vm.deleteQR(qrcode.value)
                                   }
                                 }
                               },
