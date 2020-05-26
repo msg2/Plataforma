@@ -57,6 +57,12 @@
                     </router-link>
                 </li>
                 <li class="nav-item">
+                    <router-link tag="a" to="/qrcodes" class="nav-link">
+                        <i class="nav-icon fas fa-qrcode"></i>
+                        <p>QRcodes</p>
+                    </router-link>
+                </li>
+                <li class="nav-item">
                     <router-link tag="a" to="/logs" class="nav-link">
                         <i class="nav-icon fas fa-book"></i>
                         <p>Logs</p>

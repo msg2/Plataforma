@@ -15,6 +15,8 @@ use App\Matricula;
 use App\User;
 use App\LogMatricula;
 use App\MatriculaImport;
+use App\QRcode;
+
 
 
 use Excel;
@@ -65,10 +67,10 @@ class SingleControllerAPI extends Controller
         return response()->json($matricula, 201);
     }
 
-    public function addLogMatricula(Request $request)
+    public function addLog(Request $request)
     {
         $validator = Validator::make($request->all(),[
-            'matricula'      => 'required',
+            'identificador'      => 'required',
             'park_number'    => 'required|exists:clientes,park_number',
             'datetime'    => 'required',
             'way'    => 'required|in:saida,entrada',
@@ -80,7 +82,7 @@ class SingleControllerAPI extends Controller
         }
 
         $log = new LogMatricula();
-        $log->matricula=$request->matricula;
+        $log->identificador=$request->identificador;
         $log->datetime=$request->datetime;
         $log->way=$request->way;
         $log->park_number=$request->park_number;
@@ -154,6 +156,11 @@ class SingleControllerAPI extends Controller
         ->where('park_number', $park)->get('matricula');
     }
 
+    public function getQRPark(int $park) {
+        return DB::table('qrcodes')
+        ->where('park_number', $park)->get('value');
+    }
+
     public function getNMatrPark(int $park) {
         return DB::table('matriculas')
         ->where('park_number', $park)->count();
@@ -164,7 +171,7 @@ class SingleControllerAPI extends Controller
     }
 
     public function getLogsPark(int $park) {
-        return DB::table('logsmatricula')
+        return DB::table('logs')
         ->where('park_number', $park)->get();
     }
     
@@ -179,6 +186,10 @@ class SingleControllerAPI extends Controller
 
     public function deleteCliente(int $id){
         return Cliente::where('id', $id)->delete();
+    }
+
+    public function deleteQRcode(int $id){
+        return QRcode::where('id', $id)->delete();
     }
 
     public function deleteUser(int $id){
@@ -288,5 +299,25 @@ class SingleControllerAPI extends Controller
         $estado= DB::table('estados')->where('name','coluna'.$id)->get('estado');
         //return $estado[0]->'estado';
         return $estado[0]->estado;
+    }
+
+    public function addQRcode(Request $request)
+    {
+        $validator = Validator::make($request->all(),[
+            'value'      => 'required|numeric',
+            'park_number'    => 'required|exists:clientes,park_number',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json("Dados invalidos!", 400);
+        }
+
+        $qrcode = new QRcode();
+        $qrcode->value=$request->value;
+        $qrcode->park_number=$request->park_number;
+
+        $qrcode->save();
+        
+        return response()->json($qrcode, 201);
     }
 }

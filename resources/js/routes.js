@@ -22,6 +22,11 @@ let routes = [
         meta : {requiresUser : true}
     },
     {
+        path: '/qrcodes',
+        component: require('./views/qrcodes').default,
+        meta : {requiresUser : true}
+    },
+    {
         path: '/logs',
         component: require('./views/logs').default,
         meta : {requiresUser : true}

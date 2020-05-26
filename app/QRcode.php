@@ -4,12 +4,12 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class LogMatricula extends Model
+class QRcode extends Model
 {
     public $timestamps = false;
-    protected $table = 'logs';
+    protected $table = 'qrcodes';
 
     protected $fillable = [
-        'identificador', 'park_number','datetime','way'
+        'value', 'park_number',
     ];
 }

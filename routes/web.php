@@ -29,5 +29,9 @@ Auth::routes();
 Route::post('/users', 'UsersController@create');
 
 Route::get('/{vue_capture?}', function () {
-    return view('admin');
+	if (Auth::check()) {
+		return view('admin');
+	}else{
+		return redirect('/login');
+	}
  })->where('vue_capture', '^(?!storage).*$'); 

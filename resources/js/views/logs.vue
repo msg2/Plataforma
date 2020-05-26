@@ -31,7 +31,7 @@
                     <table class="table table-hover">
                         <thead>
                         <tr>
-                            <th>Matricula</th>
+                            <th>Identificador</th>
                             <th>Park Number (ID)</th>
                             <th>Data</th>
                             <th>Entrada/Saida</th>
@@ -39,7 +39,7 @@
                         </thead>
                         <tbody>
                         <tr v-for="log in logs" v-bind:key="log.id">
-                            <td>{{log.matricula}}</td>
+                            <td>{{log.identificador}}</td>
                             <td>{{log.park_number}}</td>
                             <td>{{log.datetime}}</td>
                             <td>{{log.way}}</td>
@@ -89,7 +89,7 @@ import jsPDF from 'jsPDF'
                 console.log(dateTime)
 
                 let dataPDF = this.logs;
-                let header = ["id","matricula","park_number","datetime","way"];
+                let header = ["id","identificador","park_number","datetime","way"];
                 let headerConfig = header.map(key=>({ 
                 'name': key,
                 'prompt': key,

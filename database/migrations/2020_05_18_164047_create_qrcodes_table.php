@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateLogsMatriculaTable extends Migration
+class CreateQrcodesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,10 @@ class CreateLogsMatriculaTable extends Migration
      */
     public function up()
     {
-        Schema::create('logs', function (Blueprint $table) {
+        Schema::create('qrcodes', function (Blueprint $table) {
             $table->id();
-            $table->string('identificador');
+            $table->integer('value');
             $table->integer('park_number');
-            $table->timestamp('datetime');	
-            $table->string('way');
         });
     }
 
@@ -29,6 +27,6 @@ class CreateLogsMatriculaTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('logs');
+        Schema::dropIfExists('qrcodes');
     }
 }
