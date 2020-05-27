@@ -137,12 +137,14 @@ import VueQrcode from 'vue-qrcode'
             deleteQR(qrcode){
                 //console.log(matricula);
                 axios.delete('/api/qrcode/'+qrcode);
-                axios.get('/api/qrcodes/'+window.park_number)
-                .then(({data}) => this.qrcodes = data);
+                this.delayGet();
             }, 
             fetchData(){
                 axios.get('/api/qrcodes/'+window.park_number)
                 .then(({data}) => this.qrcodes = data);
+            },
+            delayGet(){
+                setTimeout(() => this.fetchData(), 600);
             }
         }
     }

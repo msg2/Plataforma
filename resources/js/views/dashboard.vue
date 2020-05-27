@@ -108,7 +108,7 @@
                 max:'',
                 ocupados:'',
                 dataAux:[],
-                text:'Lugares Ocupados: <LOADING>',
+                text:'Lugares Ocupados: <LOADING...>',
                 totalMatriculas:'',
                 totalClients:'...',
                 totalUsers:'...',
@@ -119,6 +119,32 @@
         created(){
             this.type=window.user_type;
             //this.fetchData();
+			if(window.user_type=='user'){
+                        axios.get('/api/cliente/'+window.park_number)
+                        .then(({data}) => this.dataAux=data)
+                        
+                        if(this.dataAux[0]!=null){
+                            this.livres = this.dataAux[0].lugares_livres;
+                            this.max= this.dataAux[0].lugares_max;
+                            this.ocupados = this.max - this.livres;
+                            this.percent = (this.ocupados/this.max)*100;
+                            //console.log(this.percent);
+
+                            document.getElementById('progbar').style.width = this.percent +"%"; //style="width: 40%"
+                            this.text ="Lugares Ocupados: "+this.ocupados + " de " + this.max;
+
+                            axios.get('/api/cliente/matriculas/'+window.park_number)
+                            .then(({data}) => this.totalMatriculas=data);
+                            
+                        }
+                    }else{
+                        axios.get('/api/cliente/count')
+                            .then(({data}) => this.totalClients=data);
+ 
+                        axios.get('/api/user/count')
+                            .then(({data}) => this.totalUsers=data);
+                    }
+			//correr aqui uma vez para nao ficar tanto tempo a apresentar a mensagem de loading em vez dos dados
         },
 
         beforeDestroy () {

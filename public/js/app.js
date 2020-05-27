@@ -2244,14 +2244,48 @@ __webpack_require__.r(__webpack_exports__);
       max: '',
       ocupados: '',
       dataAux: [],
-      text: 'Lugares Ocupados: <LOADING>',
+      text: 'Lugares Ocupados: <LOADING...>',
       totalMatriculas: '',
       totalClients: '...',
       totalUsers: '...'
     };
   },
   created: function created() {
+    var _this = this;
+
     this.type = window.user_type; //this.fetchData();
+
+    if (window.user_type == 'user') {
+      axios.get('/api/cliente/' + window.park_number).then(function (_ref) {
+        var data = _ref.data;
+        return _this.dataAux = data;
+      });
+
+      if (this.dataAux[0] != null) {
+        this.livres = this.dataAux[0].lugares_livres;
+        this.max = this.dataAux[0].lugares_max;
+        this.ocupados = this.max - this.livres;
+        this.percent = this.ocupados / this.max * 100; //console.log(this.percent);
+
+        document.getElementById('progbar').style.width = this.percent + "%"; //style="width: 40%"
+
+        this.text = "Lugares Ocupados: " + this.ocupados + " de " + this.max;
+        axios.get('/api/cliente/matriculas/' + window.park_number).then(function (_ref2) {
+          var data = _ref2.data;
+          return _this.totalMatriculas = data;
+        });
+      }
+    } else {
+      axios.get('/api/cliente/count').then(function (_ref3) {
+        var data = _ref3.data;
+        return _this.totalClients = data;
+      });
+      axios.get('/api/user/count').then(function (_ref4) {
+        var data = _ref4.data;
+        return _this.totalUsers = data;
+      });
+    } //correr aqui uma vez para nao ficar tanto tempo a apresentar a mensagem de loading em vez dos dados
+
   },
   beforeDestroy: function beforeDestroy() {
     console.log('2');
@@ -2262,37 +2296,37 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     fetchData: function fetchData() {
-      var _this = this;
+      var _this2 = this;
 
       this["int"] = setInterval(function () {
         if (window.user_type == 'user') {
-          axios.get('/api/cliente/' + window.park_number).then(function (_ref) {
-            var data = _ref.data;
-            return _this.dataAux = data;
+          axios.get('/api/cliente/' + window.park_number).then(function (_ref5) {
+            var data = _ref5.data;
+            return _this2.dataAux = data;
           });
 
-          if (_this.dataAux[0] != null) {
-            _this.livres = _this.dataAux[0].lugares_livres;
-            _this.max = _this.dataAux[0].lugares_max;
-            _this.ocupados = _this.max - _this.livres;
-            _this.percent = _this.ocupados / _this.max * 100; //console.log(this.percent);
+          if (_this2.dataAux[0] != null) {
+            _this2.livres = _this2.dataAux[0].lugares_livres;
+            _this2.max = _this2.dataAux[0].lugares_max;
+            _this2.ocupados = _this2.max - _this2.livres;
+            _this2.percent = _this2.ocupados / _this2.max * 100; //console.log(this.percent);
 
-            document.getElementById('progbar').style.width = _this.percent + "%"; //style="width: 40%"
+            document.getElementById('progbar').style.width = _this2.percent + "%"; //style="width: 40%"
 
-            _this.text = "Lugares Ocupados: " + _this.ocupados + " de " + _this.max;
-            axios.get('/api/cliente/matriculas/' + window.park_number).then(function (_ref2) {
-              var data = _ref2.data;
-              return _this.totalMatriculas = data;
+            _this2.text = "Lugares Ocupados: " + _this2.ocupados + " de " + _this2.max;
+            axios.get('/api/cliente/matriculas/' + window.park_number).then(function (_ref6) {
+              var data = _ref6.data;
+              return _this2.totalMatriculas = data;
             });
           }
         } else {
-          axios.get('/api/cliente/count').then(function (_ref3) {
-            var data = _ref3.data;
-            return _this.totalClients = data;
+          axios.get('/api/cliente/count').then(function (_ref7) {
+            var data = _ref7.data;
+            return _this2.totalClients = data;
           });
-          axios.get('/api/user/count').then(function (_ref4) {
-            var data = _ref4.data;
-            return _this.totalUsers = data;
+          axios.get('/api/user/count').then(function (_ref8) {
+            var data = _ref8.data;
+            return _this2.totalUsers = data;
           });
         }
       }, 2000);
@@ -2597,14 +2631,10 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     deleteMatricula: function deleteMatricula(matricula) {
-      var _this3 = this;
-
       //console.log(matricula);
       axios["delete"]('/api/matricula/' + matricula);
-      axios.get('/api/matricula/' + window.park_number).then(function (_ref2) {
-        var data = _ref2.data;
-        return _this3.matriculas = data;
-      });
+      this.delayGet(); //axios.get('/api/matricula/'+window.park_number)
+      //.then(({data}) => this.matriculas = data);
     },
     submitFile: function submitFile() {
       var data = new FormData();
@@ -2617,12 +2647,19 @@ __webpack_require__.r(__webpack_exports__);
       this.file = this.$refs.file.files[0];
     },
     fetchData: function fetchData() {
+      var _this3 = this;
+
+      axios.get('/api/matricula/' + window.park_number).then(function (_ref2) {
+        var data = _ref2.data;
+        return _this3.matriculas = data;
+      });
+    },
+    delayGet: function delayGet() {
       var _this4 = this;
 
-      axios.get('/api/matricula/' + window.park_number).then(function (_ref3) {
-        var data = _ref3.data;
-        return _this4.matriculas = data;
-      });
+      setTimeout(function () {
+        return _this4.fetchData();
+      }, 600);
     }
   }
 });
@@ -2800,22 +2837,24 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     deleteQR: function deleteQR(qrcode) {
-      var _this3 = this;
-
       //console.log(matricula);
       axios["delete"]('/api/qrcode/' + qrcode);
+      this.delayGet();
+    },
+    fetchData: function fetchData() {
+      var _this3 = this;
+
       axios.get('/api/qrcodes/' + window.park_number).then(function (_ref2) {
         var data = _ref2.data;
         return _this3.qrcodes = data;
       });
     },
-    fetchData: function fetchData() {
+    delayGet: function delayGet() {
       var _this4 = this;
 
-      axios.get('/api/qrcodes/' + window.park_number).then(function (_ref3) {
-        var data = _ref3.data;
-        return _this4.qrcodes = data;
-      });
+      setTimeout(function () {
+        return _this4.fetchData();
+      }, 600);
     }
   }
 });
@@ -3011,13 +3050,16 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     deleteUser: function deleteUser(id) {
+      axios["delete"]('/api/users/' + id);
+      this.delayGet(); //axios.get('/api/users')
+      //    .then(({data}) => this.users = data);
+    },
+    delayGet: function delayGet() {
       var _this3 = this;
 
-      axios["delete"]('/api/users/' + id);
-      axios.get('/api/users').then(function (_ref2) {
-        var data = _ref2.data;
-        return _this3.users = data;
-      });
+      setTimeout(function () {
+        return _this3.created();
+      }, 600);
     }
   },
   watch: {

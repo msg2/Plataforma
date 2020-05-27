@@ -175,8 +175,12 @@
             },
             deleteUser(id){
                 axios.delete('/api/users/'+id)
-                axios.get('/api/users')
-                    .then(({data}) => this.users = data);
+                this.delayGet();
+                //axios.get('/api/users')
+                //    .then(({data}) => this.users = data);
+            },
+            delayGet(){
+                setTimeout(() => this.created(), 600);
             }
         },
 

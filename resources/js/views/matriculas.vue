@@ -144,8 +144,9 @@
             deleteMatricula(matricula){
                 //console.log(matricula);
                 axios.delete('/api/matricula/'+matricula);
-                axios.get('/api/matricula/'+window.park_number)
-                .then(({data}) => this.matriculas = data);
+                this.delayGet();
+                //axios.get('/api/matricula/'+window.park_number)
+                //.then(({data}) => this.matriculas = data);
             },
             submitFile(){
                 
@@ -165,6 +166,9 @@
             fetchData(){
                 axios.get('/api/matricula/'+window.park_number)
                 .then(({data}) => this.matriculas = data);
+            },
+            delayGet(){
+                setTimeout(() => this.fetchData(), 600);
             }
         }
     }
