@@ -55,7 +55,13 @@ class SingleControllerAPI extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json("Dados invalidos!", 400);
+            return response()->json("Matricula Inválida!", 400);
+        }
+
+        $existe = DB::table('matriculas')->where('matricula', trim($request->matricula))->get(); // se for [] é porque não existe
+        
+        if(trim($request->matricula[2])!='-' || trim($request->matricula[5])!='-' || strlen(trim($request->matricula))!=8 || count($existe)!=0 ){
+            return response()->json("Matricula Inválida!", 400);
         }
 
         $matricula = new Matricula();
@@ -309,7 +315,12 @@ class SingleControllerAPI extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json("Dados invalidos!", 400);
+            return response()->json("Value invalido!", 400);
+        }
+        $existe = DB::table('qrcodes')->where('value', trim($request->value))->get(); // se for [] é porque não existe
+
+        if(trim($request->value) > 999999999 || trim($request->value)<10000 || count($existe)!=0){
+            return response()->json("Value invalido!", 400);
         }
 
         $qrcode = new QRcode();

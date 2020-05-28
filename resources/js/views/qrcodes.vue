@@ -18,7 +18,10 @@
             </div><!-- /.container-fluid -->
         </div>
         <!-- /.content-header -->
-
+        <div class="alert alert-danger" v-if="errorMessage">
+            <i type="button" class="fas fa-times" v-on:click="errorMessage=false"></i>
+            &nbsp;&nbsp;&nbsp;<strong>{{ errorMessage }}</strong>
+        </div>
         <!-- Main content -->
         <div class="content">
 
@@ -62,12 +65,12 @@
                             <!-- /.card-header -->
                             <!-- form start -->
                             <form class="form-horizontal" @submit.prevent="onSubmit">
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*(É suposto definir um numero com entre 5 a 10 digitos)
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*(É suposto definir um numero com entre 5 a 9 digitos)
                                 <div class="card-body" style="height: 300px;">
                                     <div class="form-group row">
                                         <label for="QRcode" class="col-sm-2 col-form-label">QRcode Value</label>
                                         <div class="col-sm-10">
-                                            <input type="number" min="10000" max="9999999999" class="form-control" id="QRcode" name="QRcode" required autocomplete="QRcode" autofocus placeholder="Ex: 1234567890" v-model="body.value">
+                                            <input type="number" min="10000" max="999999999" class="form-control" id="QRcode" name="QRcode" required autocomplete="QRcode" autofocus placeholder="Ex: 1234567890" v-model="body.value">
                                         </div>
                                     </div>
                                     <div id="parent" v-if="body.value">
@@ -110,7 +113,8 @@ import VueQrcode from 'vue-qrcode'
                     park_number: window.park_number,
                 },
                 file:'',
-                text:'123',                
+                text:'123',
+                errorMessage:null,     
             }
 
         },
@@ -127,11 +131,18 @@ import VueQrcode from 'vue-qrcode'
 
         methods: {
             onSubmit(){
-                //this.body.value = this.body.value.trim();
-
-                //console.log(this.body)
+                this.errorMessage=null;
                 axios.post('/api/qrcode/add',this.body)
-                    .then(body => this.qrcodes.push(body));
+                    .catch(error => {
+                        if(error.response){
+                            if(error.response.status==400){
+                                this.errorMessage=error.response.data;
+                            }else{
+                                this.errorMessage="Erro desconhecido, tente outra vez ou dê refresh à pagina";
+                            }
+                       }
+                    })
+                this.delayGet();
 
             },
             deleteQR(qrcode){
@@ -144,7 +155,7 @@ import VueQrcode from 'vue-qrcode'
                 .then(({data}) => this.qrcodes = data);
             },
             delayGet(){
-                setTimeout(() => this.fetchData(), 600);
+                setTimeout(() => this.fetchData(), 700);
             }
         }
     }

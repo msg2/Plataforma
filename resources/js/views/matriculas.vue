@@ -18,7 +18,10 @@
             </div><!-- /.container-fluid -->
         </div>
         <!-- /.content-header -->
-
+        <div class="alert alert-danger" v-if="errorMessage">
+            <i type="button" class="fas fa-times" v-on:click="errorMessage=false"></i>
+            &nbsp;&nbsp;&nbsp;<strong>{{ errorMessage }}</strong>
+        </div>
         <!-- Main content -->
         <div class="content">
 
@@ -120,9 +123,9 @@
                     park_number: window.park_number,
                 },
                 form: new Form({}),
-                file:''
+                file:'',
+                errorMessage:null
             }
-
         },
 
 
@@ -136,10 +139,20 @@
             onSubmit(){
                 this.body.matricula = this.body.matricula.trim();
                 this.body.matricula = this.body.matricula.toUpperCase();
-
+                this.errorMessage = null;
                 //console.log(this.body)
                 axios.post('/api/matricula/add',this.body)
-                    .then(body => this.matriculas.push(this.body));
+                    //.then(body => this.matriculas.push(this.body));
+                    .catch(error => {
+                        if(error.response){
+                            if(error.response.status==400){
+                                this.errorMessage=error.response.data;
+                            }else{
+                                this.errorMessage="Erro desconhecido, tente outra vez ou dê refresh à pagina";
+                            }
+                       }
+                    })
+                this.delayGet();
             },
             deleteMatricula(matricula){
                 //console.log(matricula);

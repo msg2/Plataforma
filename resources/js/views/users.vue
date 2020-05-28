@@ -180,7 +180,7 @@
                 //    .then(({data}) => this.users = data);
             },
             delayGet(){
-                setTimeout(() => this.created(), 600);
+                setTimeout(() => this.created(), 900);
             }
         },
 

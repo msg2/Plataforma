@@ -18,7 +18,10 @@
             </div><!-- /.container-fluid -->
         </div>
         <!-- /.content-header -->
-
+        <div class="alert alert-danger" v-if="errorMessage">
+            <i type="button" class="fas fa-times" v-on:click="errorMessage=false"></i>
+            &nbsp;&nbsp;&nbsp;<strong>{{ errorMessage }}</strong>
+        </div>
         <!-- Main content -->
         <div class="content">
 
@@ -67,33 +70,30 @@
                             </div>
                             <!-- /.card-header -->
                             <!-- form start -->
-                            <form class="form-horizontal" @submit.prevent="onSubmit" @keydown="form.errors.clear()">
+                            <form class="form-horizontal" @submit.prevent="onSubmit">
                                 <div class="card-body" style="height: 239px;">
                                     <div class="form-group row">
                                         <label for="name" class="col-sm-2 col-form-label">Name</label>
                                         <div class="col-sm-10">
                                             <input type="text" class="form-control" id="name" name="name" required autocomplete="name" autofocus placeholder="Name" v-model="form.name">
-                                            <span class="invalid-feedback d-block" role="alert" v-if="form.errors.has('name')" v-text="form.errors.get('name')"></span>
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label for="number" class="col-sm-2 col-form-label">Park Number</label>
                                         <div class="col-sm-10">
-                                            <input type="text" class="form-control" id="number" name="number" required autocomplete="number" autofocus placeholder="Park Number" v-model="form.park_number">
-                                            <span class="invalid-feedback d-block" role="alert" v-if="form.errors.has('number')" v-text="form.errors.get('number')"></span>
+                                            <input type="number" class="form-control" id="number" name="number" required autocomplete="number" autofocus placeholder="Park Number" v-model="form.park_number">
                                         </div>
                                     </div>
                                     <div class="form-group row">
                                         <label for="number" class="col-sm-2 col-form-label">Total Spots</label>
                                         <div class="col-sm-10">
                                             <input type="text" class="form-control" id="total" name="total" required autocomplete="total" autofocus placeholder="Total Spots" v-model="form.lugares_max">
-                                            <span class="invalid-feedback d-block" role="alert" v-if="form.errors.has('total')" v-text="form.errors.get('total')"></span>
                                         </div>
                                     </div>
                                 </div>
                                 <!-- /.card-body -->
                                 <div class="card-footer">
-                                    <button type="submit" class="btn btn-info" :disabled="form.errors.any()">Add Park</button>
+                                    <button type="submit" class="btn btn-info">Add Park</button>
                                 </div>
                                 <!-- /.card-footer -->
                             </form>
@@ -118,12 +118,13 @@
         data() {
             return {
                 clients: [],
-                form: new Form({
+                form: {
                     'name': '',
                     'park_number': '',
                     'lugares_max': '',
-                }),
+                },
                 int:null,
+                errorMessage:null,
             }
         },
         created() {
@@ -137,9 +138,21 @@
         },
         methods: {
             onSubmit(){
-                this.form
-                    .post('/api/cliente/add')
-                    .then(client => this.clients.push(client));
+                this.errorMessage = null;
+
+                axios.post('/api/cliente/add',this.form)
+                    .catch(error => {
+                        if(error.response){
+                            if(error.response.status==400){
+                                this.errorMessage=error.response.data;
+                            }else{
+                                this.errorMessage="Erro desconhecido, tente outra vez ou dê refresh à pagina";
+                            }
+                       }
+                    })
+                    this.delayGet();
+                    //.then(client => this.clients.push(client))
+
             },
             startInterval(){
                 this.int = setInterval(() => {
@@ -149,8 +162,11 @@
             },
             deleteCliente(id){
                 axios.delete('/api/cliente/'+id)
-                axios.get('/api/cliente')
-                    .then(({data}) => this.clients = data);
+                this.delayGet();
+            },
+            delayGet(){
+                setTimeout(() => axios.get('/api/cliente')
+                    .then(({data}) => this.clients = data), 600);
             }
         }
     }

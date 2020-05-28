@@ -2077,12 +2077,13 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       clients: [],
-      form: new Form({
+      form: {
         'name': '',
         'park_number': '',
         'lugares_max': ''
-      }),
-      "int": null
+      },
+      "int": null,
+      errorMessage: null
     };
   },
   created: function created() {
@@ -2101,9 +2102,17 @@ __webpack_require__.r(__webpack_exports__);
     onSubmit: function onSubmit() {
       var _this2 = this;
 
-      this.form.post('/api/cliente/add').then(function (client) {
-        return _this2.clients.push(client);
+      this.errorMessage = null;
+      axios.post('/api/cliente/add', this.form)["catch"](function (error) {
+        if (error.response) {
+          if (error.response.status == 400) {
+            _this2.errorMessage = error.response.data;
+          } else {
+            _this2.errorMessage = "Erro desconhecido, tente outra vez ou dê refresh à pagina";
+          }
+        }
       });
+      this.delayGet(); //.then(client => this.clients.push(client))
     },
     startInterval: function startInterval() {
       var _this3 = this;
@@ -2116,13 +2125,18 @@ __webpack_require__.r(__webpack_exports__);
       }, 5000);
     },
     deleteCliente: function deleteCliente(id) {
+      axios["delete"]('/api/cliente/' + id);
+      this.delayGet();
+    },
+    delayGet: function delayGet() {
       var _this4 = this;
 
-      axios["delete"]('/api/cliente/' + id);
-      axios.get('/api/cliente').then(function (_ref3) {
-        var data = _ref3.data;
-        return _this4.clients = data;
-      });
+      setTimeout(function () {
+        return axios.get('/api/cliente').then(function (_ref3) {
+          var data = _ref3.data;
+          return _this4.clients = data;
+        });
+      }, 600);
     }
   }
 });
@@ -2598,6 +2612,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2607,7 +2624,8 @@ __webpack_require__.r(__webpack_exports__);
         park_number: window.park_number
       },
       form: new Form({}),
-      file: ''
+      file: '',
+      errorMessage: null
     };
   },
   created: function created() {
@@ -2624,11 +2642,20 @@ __webpack_require__.r(__webpack_exports__);
       var _this2 = this;
 
       this.body.matricula = this.body.matricula.trim();
-      this.body.matricula = this.body.matricula.toUpperCase(); //console.log(this.body)
+      this.body.matricula = this.body.matricula.toUpperCase();
+      this.errorMessage = null; //console.log(this.body)
 
-      axios.post('/api/matricula/add', this.body).then(function (body) {
-        return _this2.matriculas.push(_this2.body);
+      axios.post('/api/matricula/add', this.body) //.then(body => this.matriculas.push(this.body));
+      ["catch"](function (error) {
+        if (error.response) {
+          if (error.response.status == 400) {
+            _this2.errorMessage = error.response.data;
+          } else {
+            _this2.errorMessage = "Erro desconhecido, tente outra vez ou dê refresh à pagina";
+          }
+        }
       });
+      this.delayGet();
     },
     deleteMatricula: function deleteMatricula(matricula) {
       //console.log(matricula);
@@ -2801,6 +2828,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -2811,7 +2841,8 @@ __webpack_require__.r(__webpack_exports__);
         park_number: window.park_number
       },
       file: '',
-      text: '123'
+      text: '123',
+      errorMessage: null
     };
   },
   components: {
@@ -2830,11 +2861,17 @@ __webpack_require__.r(__webpack_exports__);
     onSubmit: function onSubmit() {
       var _this2 = this;
 
-      //this.body.value = this.body.value.trim();
-      //console.log(this.body)
-      axios.post('/api/qrcode/add', this.body).then(function (body) {
-        return _this2.qrcodes.push(body);
+      this.errorMessage = null;
+      axios.post('/api/qrcode/add', this.body)["catch"](function (error) {
+        if (error.response) {
+          if (error.response.status == 400) {
+            _this2.errorMessage = error.response.data;
+          } else {
+            _this2.errorMessage = "Erro desconhecido, tente outra vez ou dê refresh à pagina";
+          }
+        }
       });
+      this.delayGet();
     },
     deleteQR: function deleteQR(qrcode) {
       //console.log(matricula);
@@ -2854,7 +2891,7 @@ __webpack_require__.r(__webpack_exports__);
 
       setTimeout(function () {
         return _this4.fetchData();
-      }, 600);
+      }, 700);
     }
   }
 });
@@ -3059,7 +3096,7 @@ __webpack_require__.r(__webpack_exports__);
 
       setTimeout(function () {
         return _this3.created();
-      }, 600);
+      }, 900);
     }
   },
   watch: {
@@ -45486,6 +45523,22 @@ var render = function() {
   return _c("div", [
     _vm._m(0),
     _vm._v(" "),
+    _vm.errorMessage
+      ? _c("div", { staticClass: "alert alert-danger" }, [
+          _c("i", {
+            staticClass: "fas fa-times",
+            attrs: { type: "button" },
+            on: {
+              click: function($event) {
+                _vm.errorMessage = false
+              }
+            }
+          }),
+          _vm._v("\n           "),
+          _c("strong", [_vm._v(_vm._s(_vm.errorMessage))])
+        ])
+      : _vm._e(),
+    _vm._v(" "),
     _c("div", { staticClass: "content" }, [
       _c("div", { staticClass: "container-fluid" }, [
         _c("div", { staticClass: "row" }, [
@@ -45552,9 +45605,6 @@ var render = function() {
                     submit: function($event) {
                       $event.preventDefault()
                       return _vm.onSubmit($event)
-                    },
-                    keydown: function($event) {
-                      return _vm.form.errors.clear()
                     }
                   }
                 },
@@ -45605,19 +45655,7 @@ var render = function() {
                                 _vm.$set(_vm.form, "name", $event.target.value)
                               }
                             }
-                          }),
-                          _vm._v(" "),
-                          _vm.form.errors.has("name")
-                            ? _c("span", {
-                                staticClass: "invalid-feedback d-block",
-                                attrs: { role: "alert" },
-                                domProps: {
-                                  textContent: _vm._s(
-                                    _vm.form.errors.get("name")
-                                  )
-                                }
-                              })
-                            : _vm._e()
+                          })
                         ])
                       ]),
                       _vm._v(" "),
@@ -45643,7 +45681,7 @@ var render = function() {
                             ],
                             staticClass: "form-control",
                             attrs: {
-                              type: "text",
+                              type: "number",
                               id: "number",
                               name: "number",
                               required: "",
@@ -45664,19 +45702,7 @@ var render = function() {
                                 )
                               }
                             }
-                          }),
-                          _vm._v(" "),
-                          _vm.form.errors.has("number")
-                            ? _c("span", {
-                                staticClass: "invalid-feedback d-block",
-                                attrs: { role: "alert" },
-                                domProps: {
-                                  textContent: _vm._s(
-                                    _vm.form.errors.get("number")
-                                  )
-                                }
-                              })
-                            : _vm._e()
+                          })
                         ])
                       ]),
                       _vm._v(" "),
@@ -45723,37 +45749,13 @@ var render = function() {
                                 )
                               }
                             }
-                          }),
-                          _vm._v(" "),
-                          _vm.form.errors.has("total")
-                            ? _c("span", {
-                                staticClass: "invalid-feedback d-block",
-                                attrs: { role: "alert" },
-                                domProps: {
-                                  textContent: _vm._s(
-                                    _vm.form.errors.get("total")
-                                  )
-                                }
-                              })
-                            : _vm._e()
+                          })
                         ])
                       ])
                     ]
                   ),
                   _vm._v(" "),
-                  _c("div", { staticClass: "card-footer" }, [
-                    _c(
-                      "button",
-                      {
-                        staticClass: "btn btn-info",
-                        attrs: {
-                          type: "submit",
-                          disabled: _vm.form.errors.any()
-                        }
-                      },
-                      [_vm._v("Add Park")]
-                    )
-                  ])
+                  _vm._m(4)
                 ]
               )
             ])
@@ -45824,6 +45826,16 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "card-header" }, [
       _c("h3", { staticClass: "card-title" }, [_vm._v("New Park Form")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-footer" }, [
+      _c("button", { staticClass: "btn btn-info", attrs: { type: "submit" } }, [
+        _vm._v("Add Park")
+      ])
     ])
   }
 ]
@@ -46133,6 +46145,22 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", [
     _vm._m(0),
+    _vm._v(" "),
+    _vm.errorMessage
+      ? _c("div", { staticClass: "alert alert-danger" }, [
+          _c("i", {
+            staticClass: "fas fa-times",
+            attrs: { type: "button" },
+            on: {
+              click: function($event) {
+                _vm.errorMessage = false
+              }
+            }
+          }),
+          _vm._v("\n           "),
+          _c("strong", [_vm._v(_vm._s(_vm.errorMessage))])
+        ])
+      : _vm._e(),
     _vm._v(" "),
     _c("div", { staticClass: "content" }, [
       _c("div", { staticClass: "container-fluid" }, [
@@ -48154,6 +48182,22 @@ var render = function() {
   return _c("div", [
     _vm._m(0),
     _vm._v(" "),
+    _vm.errorMessage
+      ? _c("div", { staticClass: "alert alert-danger" }, [
+          _c("i", {
+            staticClass: "fas fa-times",
+            attrs: { type: "button" },
+            on: {
+              click: function($event) {
+                _vm.errorMessage = false
+              }
+            }
+          }),
+          _vm._v("\n           "),
+          _c("strong", [_vm._v(_vm._s(_vm.errorMessage))])
+        ])
+      : _vm._e(),
+    _vm._v(" "),
     _c("div", { staticClass: "content" }, [
       _c("div", { staticClass: "container-fluid" }, [
         _c("div", { staticClass: "row" }, [
@@ -48219,7 +48263,7 @@ var render = function() {
                 },
                 [
                   _vm._v(
-                    "\n                                 *(É suposto definir um numero com entre 5 a 10 digitos)\n                            "
+                    "\n                                 *(É suposto definir um numero com entre 5 a 9 digitos)\n                            "
                   ),
                   _c(
                     "div",
@@ -48252,7 +48296,7 @@ var render = function() {
                             attrs: {
                               type: "number",
                               min: "10000",
-                              max: "9999999999",
+                              max: "999999999",
                               id: "QRcode",
                               name: "QRcode",
                               required: "",
