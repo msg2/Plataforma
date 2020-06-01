@@ -60,9 +60,13 @@ class SingleControllerAPI extends Controller
 
         $existe = DB::table('matriculas')->where('matricula', trim($request->matricula))->get(); // se for [] é porque não existe
         
-        if(trim($request->matricula[2])!='-' || trim($request->matricula[5])!='-' || strlen(trim($request->matricula))!=8 || count($existe)!=0 ){
+        if(trim($request->matricula[2])!='-' || trim($request->matricula[5])!='-' || strlen(trim($request->matricula))!=8){
             return response()->json("Matricula Inválida!", 400);
         }
+		
+		if(count($existe)!=0 ){
+			return response()->json("Matricula repetida!", 400);
+		}
 
         $matricula = new Matricula();
         $matricula->matricula=$request->matricula;
@@ -319,10 +323,13 @@ class SingleControllerAPI extends Controller
         }
         $existe = DB::table('qrcodes')->where('value', trim($request->value))->get(); // se for [] é porque não existe
 
-        if(trim($request->value) > 999999999 || trim($request->value)<10000 || count($existe)!=0){
+        if(trim($request->value) > 999999999 || trim($request->value)<10000){
             return response()->json("Value invalido!", 400);
         }
 
+		if(count($existe)!=0){
+			return response()->json("Value repetido!", 400);
+		}
         $qrcode = new QRcode();
         $qrcode->value=$request->value;
         $qrcode->park_number=$request->park_number;

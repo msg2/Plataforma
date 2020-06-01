@@ -2831,6 +2831,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -2842,7 +2843,8 @@ __webpack_require__.r(__webpack_exports__);
       },
       file: '',
       text: '123',
-      errorMessage: null
+      errorMessage: null,
+      img: null
     };
   },
   components: {
@@ -2871,7 +2873,42 @@ __webpack_require__.r(__webpack_exports__);
           }
         }
       });
-      this.delayGet();
+      this.delayGet(); /////////////////////////////////Donwload imagem automatico
+
+      this.img = document.getElementById("imgto");
+      var image_data = atob(this.img.src.split(',')[1]); // Use typed arrays to convert the binary data to a Blob
+
+      var arraybuffer = new ArrayBuffer(image_data.length);
+      var view = new Uint8Array(arraybuffer);
+
+      for (var i = 0; i < image_data.length; i++) {
+        view[i] = image_data.charCodeAt(i) & 0xff;
+      }
+
+      try {
+        // This is the recommended method:
+        var blob = new Blob([arraybuffer], {
+          type: 'application/octet-stream'
+        });
+      } catch (e) {
+        // The BlobBuilder API has been deprecated in favour of Blob, but older
+        // browsers don't know about the Blob constructor
+        // IE10 also supports BlobBuilder, but since the `Blob` constructor
+        //  also works, there's no need to add `MSBlobBuilder`.
+        var bb = new (window.WebKitBlobBuilder || window.MozBlobBuilder)();
+        bb.append(arraybuffer);
+        var blob = bb.getBlob('application/octet-stream'); // <-- Here's the Blob
+      } // Use the URL object to create a temporary URL
+
+
+      var url = (window.webkitURL || window.URL).createObjectURL(blob);
+      var link = document.createElement("a");
+      link.download = 'qr_ ' + this.body.value + '.png';
+      link.href = url;
+      document.body.appendChild(link);
+      link.click(); // Cleanup the DOM
+
+      document.body.removeChild(link); /////////////////////////////////////Download imagem automatico
     },
     deleteQR: function deleteQR(qrcode) {
       //console.log(matricula);
@@ -48324,10 +48361,24 @@ var render = function() {
                             [
                               _c("vue-qrcode", {
                                 attrs: {
+                                  id: "imgto",
                                   classe: "center",
                                   value: _vm.body.value
                                 }
-                              })
+                              }),
+                              _vm._v(" "),
+                              _c(
+                                "a",
+                                {
+                                  staticClass: "btn btn-sm btn-danger",
+                                  attrs: {
+                                    id: "banana",
+                                    href: "123",
+                                    download: "filename.jpg"
+                                  }
+                                },
+                                [_vm._v(" Download PNG")]
+                              )
                             ],
                             1
                           )

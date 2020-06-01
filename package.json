@@ -27,6 +27,7 @@
     "dependencies": {
         "@fortawesome/fontawesome-free": "^5.11.2",
         "admin-lte": "^3.0",
+        "downloadjs": "^1.4.7",
         "jspdf": "^1.5.3",
         "qrcode": "^1.4.4",
         "vue-qrcode": "^0.3.3"
